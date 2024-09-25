@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.cpu
-    image: liveportrait2:latest
+    image: efficient-liveportrait:latest
     volumes:
       - ./:/home/ubuntu/work
       - /tmp/.X11-unix:/tmp/.X11-unix
