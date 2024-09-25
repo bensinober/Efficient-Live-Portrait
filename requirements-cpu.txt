@@ -33,7 +33,7 @@ huggingface-hub==0.23.4
 humanfriendly==10.0
 idna==3.7
 imageio==2.34.2
-imageio-ffmpeg==2.35.1
+imageio-ffmpeg==0.5.1
 importlib_resources==6.4.0
 Jinja2==3.1.4
 joblib==1.4.2
