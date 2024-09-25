@@ -1,0 +1,69 @@
+FROM ubuntu:latest
+
+ENV DEBIAN_FRONTEND noninteractive
+
+# This sets the shell to fail if any individual command
+# fails in the build pipeline, rather than just the last command
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Make sure the base image is up to date
+RUN apt-get update -y && apt-get upgrade -y
+
+# Install the base toolchain
+RUN apt-get install --yes --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-dev \
+    bzip2 \
+    ca-certificates \
+    locales \
+    sudo \
+    tini \
+    git \
+    cmake \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libglib2.0-0 \
+    libx11-dev \
+    ffmpeg \
+    libsox-dev \
+    libopencv-dev \
+    wget && \
+    apt-get clean
+
+# Install Base PyTorch System - Assume CPU
+RUN rm /usr/lib/python3.12/EXTERNALLY-MANAGED && \
+  pip3 install --default-timeout=1000 \
+  diffusers \
+  torch \
+  torchvision \
+  torchaudio \
+  torchdatasets \
+  torchtext \
+  datasets \
+  transformers \
+  --extra-index-url https://download.pytorch.org/whl/cpu
+
+RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su
+
+# Create work directory (for volume mounting)
+USER ubuntu
+RUN  mkdir "/home/ubuntu/work"
+WORKDIR /home/ubuntu/work
+
+ENV LMDB_PURE=1
+ENV LMDB_FORCE_SYSTEM=1
+
+# Install required Python packages
+COPY requirements-cpu.txt .
+RUN pip install --default-timeout=1000 -r requirements-cpu.txt
+
+# Set the timezone
+USER root
+RUN ln -sf /usr/share/zoneinfo/Europe/Oslo /etc/localtime
+# Set timezone
+ENV TZ Europe/Oslo
+RUN usermod -a -G video ubuntu
+
+ENTRYPOINT ["tini", "-g", "--"]

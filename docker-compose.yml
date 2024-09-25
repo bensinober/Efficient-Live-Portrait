@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.cpu
+    image: liveportrait2:latest
+    volumes:
+      - ./:/home/ubuntu/work
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    devices:
+      - /dev/video0:/dev/video0
+    environment:
+      DISPLAY: $DISPLAY
+    group_add:
+      - video
+    tty: true
+    command: /bin/bash
+    #command: python3 run_live_portrait.py --task=webcam --driving_video=0 --source_image=experiment_examples/examples/source/368220873_826368889022136_4472311944594836999_n.jpg
+    #command: python3 run_live_portrait.py --task=webcam --driving_video=0 --source_image=experiment_examples/examples/source/test.jpg
