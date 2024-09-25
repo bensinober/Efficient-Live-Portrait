@@ -377,7 +377,9 @@ class EfficientLivePortrait(PortraitController):
                 i_p_i = self.warp_decode(f_s, np.array(x_s),
                                          np.array(x_d_i_new))
                 if self.config['flag_pasteback']:
-                    mask_ori = self.prepare_paste_back(self.config['mask_crop'], crop_info['M_c2o'])
+                    #mask_ori = self.prepare_paste_back(self.config['mask_crop'], crop_info['M_c2o'])
+                    #i_p_i_to_ori_blend = self.paste_back(i_p_i, crop_info['M_c2o'], img_rgb, mask_ori)
+                    mask_ori = self.prepare_paste_back(crop_info['M_c2o'], self.config['dsize'])
                     i_p_i_to_ori_blend = self.paste_back(i_p_i, crop_info['M_c2o'], img_rgb, mask_ori)
                     cv2.imshow('a', i_p_i_to_ori_blend[:, :, ::-1])
                 if cv2.waitKey(1) & 0xff == ord('q'):
